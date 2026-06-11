@@ -32,14 +32,14 @@ By default, the bridge runs Kiro headless with `--trust-all-tools`. Pass
 
 | Argument | Description | Example |
 |----------|-------------|---------|
-| `--model <name>` | Forward model selection to `kiro-cli chat --model` | `--model claude-sonnet-4` |
+| `--model <name>` | Forward model selection to `kiro-cli chat --model`. Family aliases (`opus`, `sonnet`, `haiku`) and natural forms are normalized to the canonical id | `--model opus` |
 | `--list-models` | List Kiro models and exit | `--list-models` |
 | `--model-format <format>` | Output format for `--list-models`: `plain`, `json`, or `json-pretty` | `--model-format json-pretty` |
 | `--effort <level>` | Forward reasoning effort to `kiro-cli chat --effort` | `--effort high` |
 | `--agent <name>` | Use a Kiro custom agent config | `--agent code-reviewer` |
 | `--kiro-agent <name>` | Backward-compatible alias for `--agent` | `--kiro-agent code-reviewer` |
 | `--parallel` | Ask Kiro to use native subagent/crew capabilities when useful | `--parallel` |
-| `--subagent-model <name>` | Ask spawned subagents to use this model when available. Implies `--parallel` | `--subagent-model claude-sonnet-4` |
+| `--subagent-model <name>` | Ask spawned subagents to use this model when available. Implies `--parallel` | `--subagent-model sonnet` |
 | `--dirs <paths>` | Recursively inline directories into the bridge prompt | `--dirs src,docs` |
 | `--add-dir <path>` | Compatibility alias that inlines the directory as context. Kiro has no native `--add-dir` | `--add-dir src` |
 | `--cwd <path>` | Spawn Kiro from this working directory | `--cwd ./frontend` |
@@ -131,7 +131,7 @@ node "${CLAUDE_PLUGIN_ROOT}/scripts/kiro-bridge.js" --model opus -- "develop a f
 
 ### Select a model
 ```bash
-/cc-kiro-plugin:kiro --model claude-sonnet-4 --effort high refactor this module for testability
+/cc-kiro-plugin:kiro --model opus --effort high refactor this module for testability
 ```
 
 ### Continue previous session

@@ -62,7 +62,7 @@ Claude poderia chamar `kiro-cli` direto via Bash, mas o plugin adiciona um contr
 
 /cc-kiro-plugin:kiro --list-models --model-format json-pretty
 
-/cc-kiro-plugin:kiro --model claude-sonnet-4 --effort high "Desenhe o schema do módulo X"
+/cc-kiro-plugin:kiro --model sonnet --effort high "Desenhe o schema do módulo X"
 
 /cc-kiro-plugin:kiro --cwd ./frontend --parallel "Implemente as telas React solicitadas e rode checks"
 

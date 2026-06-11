@@ -141,7 +141,7 @@ node "${CLAUDE_PLUGIN_ROOT}/scripts/kiro-bridge.js" --cwd ./frontend --parallel 
 ```bash
 node "${CLAUDE_PLUGIN_ROOT}/scripts/kiro-bridge.js" --list-models --model-format json-pretty
 
-node "${CLAUDE_PLUGIN_ROOT}/scripts/kiro-bridge.js" --model claude-sonnet-4 --effort high \
+node "${CLAUDE_PLUGIN_ROOT}/scripts/kiro-bridge.js" --model sonnet --effort high \
   "Refactor this module for testability."
 ```
 

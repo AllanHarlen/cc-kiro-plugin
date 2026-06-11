@@ -167,7 +167,7 @@ test("main normalizes a natural-language model alias to the canonical id", async
   const taskArgs = calls[2]?.args ?? [];
   const modelIndex = taskArgs.indexOf("--model");
   assert.ok(modelIndex >= 0, "expected --model to be forwarded");
-  assert.equal(taskArgs[modelIndex + 1], "claude-opus-4.7");
+  assert.equal(taskArgs[modelIndex + 1], "claude-opus-4.8");
   // "develop a front-end" is build work: agentic mode must stay on.
   assert.ok(taskArgs.includes("--trust-all-tools"));
 });

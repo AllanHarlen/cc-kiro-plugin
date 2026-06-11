@@ -1,7 +1,7 @@
 {
     "name": "cc-kiro-plugin",
     "displayName": "Kiro CLI Integration",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Agentic coding assistant powered by the direct Kiro CLI bridge. Use the command/skill path or kiro-coder for implementation; kiro-agent is read-only analysis.",
     "author": {
         "name": "Allan Harlen",

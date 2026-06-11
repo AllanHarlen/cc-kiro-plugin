@@ -771,8 +771,8 @@ function buildKiroMissingError() {
 // source of truth used both by resolveAutoModel and by the natural-language
 // alias normalizer below. Update these when Kiro ships new model versions.
 export const CANONICAL_MODELS = {
-  opus: "claude-opus-4.7",
-  sonnet: "claude-sonnet-4",
+  opus: "claude-opus-4.8",
+  sonnet: "claude-sonnet-4.6",
   haiku: "claude-haiku-4",
 };
 
@@ -792,15 +792,15 @@ export function normalizeModel(raw) {
   if (lower === "auto") return "auto";
 
   // Normalize spacing/separators and drop an optional leading "claude" token so
-  // "Claude Opus 4.7", "claude-opus-4.7", and "opus 4.7" all compare equally.
+  // "Claude Opus 4.8", "claude-opus-4.8", and "opus 4.8" all compare equally.
   const compact = lower
     .replace(/[\s_]+/g, "-")
     .replace(/^claude-?/, "");
 
-  // Family-only alias: "opus" -> "claude-opus-4.7".
+  // Family-only alias: "opus" -> "claude-opus-4.8".
   if (CANONICAL_MODELS[compact]) return CANONICAL_MODELS[compact];
 
-  // Family + explicit version: "opus-4.7" -> "claude-opus-4.7".
+  // Family + explicit version: "opus-4.8" -> "claude-opus-4.8".
   for (const family of MODEL_FAMILIES) {
     if (compact === family || compact.startsWith(`${family}-`)) {
       return `claude-${compact}`;

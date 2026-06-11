@@ -42,7 +42,7 @@ Listar modelos disponiveis:
 Selecionar modelo:
 
 ```bash
-/cc-kiro-plugin:kiro --model claude-sonnet-4 --effort high \
+/cc-kiro-plugin:kiro --model sonnet --effort high \
   "Desenhe o schema do modulo de faturamento e implemente as migrations."
 ```
 
@@ -83,7 +83,7 @@ modelo especifico.
 ## UC10 - Inspecionar comando resolvido
 
 ```bash
-/cc-kiro-plugin:kiro --print-command --model claude-sonnet-4 \
+/cc-kiro-plugin:kiro --print-command --model sonnet \
   "Explique o modulo scripts."
 ```
 
@@ -95,7 +95,7 @@ agentic, `--trust-all-tools`.
 Quando o Kiro reporta rate limit/quota, o bridge emite:
 
 ```json
-{"status":"QUOTA_EXAUSTED","reason":"quota or rate limit reached","model":"claude-sonnet-4","retry":"--continue"}
+{"status":"QUOTA_EXAUSTED","reason":"quota or rate limit reached","model":"claude-sonnet-4.6","retry":"--continue"}
 ```
 
 Depois do reset de quota:

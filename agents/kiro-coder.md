@@ -75,7 +75,7 @@ Coding task with a specific model:
 
 ```bash
 node "${CLAUDE_PLUGIN_ROOT}/scripts/kiro-bridge.js" \
-  --model claude-sonnet-4 \
+  --model sonnet \
   --effort high \
   --output-file "${TMPDIR:-/tmp}/kiro-coder-output.txt" \
   -- "<TASK>"
@@ -96,7 +96,7 @@ Use a Kiro custom agent:
 ```bash
 node "${CLAUDE_PLUGIN_ROOT}/scripts/kiro-bridge.js" \
   --agent code-reviewer \
-  --model claude-sonnet-4 \
+  --model sonnet \
   -- "<TASK>"
 ```
 

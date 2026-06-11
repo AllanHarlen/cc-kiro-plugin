@@ -62,7 +62,7 @@ Claude can call `kiro-cli` directly through Bash, but the plugin adds a stable c
 
 /cc-kiro-plugin:kiro --list-models --model-format json-pretty
 
-/cc-kiro-plugin:kiro --model claude-sonnet-4 --effort high "Design the database schema for module X"
+/cc-kiro-plugin:kiro --model sonnet --effort high "Design the database schema for module X"
 
 /cc-kiro-plugin:kiro --cwd ./frontend --parallel "Implement the requested React screens and run checks"
 
