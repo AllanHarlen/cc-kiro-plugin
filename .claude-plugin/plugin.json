@@ -1,0 +1,56 @@
+{
+    "name": "cc-kiro-plugin",
+    "displayName": "Kiro CLI Integration",
+    "version": "0.1.0",
+    "description": "Agentic coding assistant powered by the direct Kiro CLI bridge. Use the command/skill path or kiro-coder for implementation; kiro-agent is read-only analysis.",
+    "author": {
+        "name": "Allan Harlen",
+        "email": "allanharlen@gmail.com"
+    },
+    "homepage": "https://github.com/AllanHarlen/cc-kiro-plugin",
+    "repository": "https://github.com/AllanHarlen/cc-kiro-plugin",
+    "license": "MIT",
+    "keywords": [
+        "kiro",
+        "kiro-cli",
+        "agentic",
+        "code-generation",
+        "code-exploration",
+        "architecture",
+        "codex",
+        "claude-code"
+    ],
+    "skills": "./skills",
+    "commands": [
+        "./commands/kiro.md"
+    ],
+    "agents": [
+        "./agents/kiro-coder.md",
+        "./agents/kiro-agent.md"
+    ],
+    "requiresExternalTool": {
+        "name": "kiro-cli",
+        "installUrl": "https://kiro.dev/docs/cli/installation/",
+        "description": "Kiro CLI - AI coding agent for the terminal"
+    },
+    "userConfig": {
+        "default_model": {
+            "type": "string",
+            "title": "Default Kiro Model",
+            "description": "Model identifier forwarded to kiro-cli chat --model when --model is not specified. Use `node scripts/kiro-bridge.js --list-models` to inspect available models. Leave empty to use Kiro's configured default.",
+            "default": ""
+        },
+        "default_effort": {
+            "type": "string",
+            "title": "Default Kiro Effort",
+            "description": "Optional reasoning effort forwarded to kiro-cli chat --effort when supported: low, medium, high, xhigh, or max.",
+            "default": ""
+        },
+        "timeout": {
+            "type": "string",
+            "title": "Default Timeout",
+            "description": "Bridge silence timeout, for example 3m, 300s, or 5m0s.",
+            "default": "5m0s"
+        }
+    }
+}

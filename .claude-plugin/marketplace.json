@@ -1,0 +1,51 @@
+{
+    "name": "cc-kiro-plugin",
+    "description": "Agentic coding assistant powered by the direct Kiro CLI bridge. Includes a Kiro coding agent, a read-only analysis agent, and model selection support.",
+    "owner": {
+        "name": "Allan Harlen",
+        "email": "allanharlen@gmail.com"
+    },
+    "plugins": [
+        {
+            "name": "cc-kiro-plugin",
+            "displayName": "Kiro Agentic Coder",
+            "description": "Invoke Kiro CLI through the direct bridge for coding, analysis, model selection, and custom Kiro agents.",
+            "version": "0.1.0",
+            "author": {
+                "name": "Allan Harlen",
+                "email": "allanharlen@gmail.com"
+            },
+            "source": "./",
+            "category": "integrations",
+            "tags": [
+                "kiro",
+                "kiro-cli",
+                "agentic",
+                "code-generation",
+                "code-exploration",
+                "architecture",
+                "models",
+                "multi-agent"
+            ],
+            "keywords": [
+                "kiro",
+                "kiro-cli",
+                "agentic",
+                "code-exploration",
+                "analysis",
+                "architecture",
+                "refactoring",
+                "model-selection",
+                "custom-agents"
+            ],
+            "homepage": "https://github.com/AllanHarlen/cc-kiro-plugin",
+            "repository": "https://github.com/AllanHarlen/cc-kiro-plugin",
+            "license": "MIT",
+            "requiresExternalTool": {
+                "name": "kiro-cli",
+                "installUrl": "https://kiro.dev/docs/cli/installation/",
+                "description": "Kiro CLI"
+            }
+        }
+    ]
+}

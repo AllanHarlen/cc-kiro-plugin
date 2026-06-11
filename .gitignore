@@ -1,0 +1,25 @@
+# Claude Code local settings (user-specific)
+.claude/settings.local.json
+.claude/*.local.md
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Development artifacts
+openspec/
+.antigravitycli/
+.playwright-mcp/
+relatorio_*.md
+dog_nano_banana.png
