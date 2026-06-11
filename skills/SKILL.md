@@ -32,6 +32,27 @@ By default, the bridge is agentic: `kiro-cli chat --no-interactive
 Kiro headless mode requires authentication. Use `kiro-cli login` for local
 sessions; for unattended/headless automation, set `KIRO_API_KEY`.
 
+## Natural-Language to Flags Conversion
+
+Requests arrive in natural language. Convert intent into explicit flags so the
+run matches the request:
+
+| User says | Convert to |
+|-----------|------------|
+| "use claude opus" / "com o opus" / "opus 4.7" | `--model opus` |
+| "use o sonnet" / "with sonnet 4" | `--model sonnet` |
+| "use haiku" | `--model haiku` |
+| "high effort" / "esforço alto" / "think hard" | `--effort high` |
+| build / create / implement / edit / fix / refactor | agentic (default, no `--read-only`) |
+| analyze / review / audit / explain / plan (no writes) | `--read-only` |
+| "em paralelo" / "use subagents" | `--parallel` |
+| "no diretório X" / "from ./Y" | `--cwd <path>` |
+
+The bridge normalizes model aliases (`opus`, `sonnet`, `haiku`) and natural
+forms like `"claude opus 4.7"` into the canonical Kiro id, so passing the family
+alias to `--model` is always safe. Example: "use claude opus and develop a
+front-end" -> `--model opus` in agentic mode.
+
 ## Host Entry Points
 
 ### Claude Code

@@ -13,6 +13,7 @@ import {
   parseCliArgs,
   resolveKiroExe,
   resolveAutoModel,
+  normalizeModel,
   spawnViaConPty,
   stripAnsi,
   EXIT_QUOTA_EXAUSTED,
@@ -226,6 +227,36 @@ test("resolveAutoModel selects broader model hints as context grows", () => {
   assert.equal(resolveAutoModel({ included: [], skipped: [] }), "auto");
   assert.equal(resolveAutoModel({ included: [{ bytes: 100_000 }], skipped: [] }), "claude-sonnet-4");
   assert.equal(resolveAutoModel({ included: [{ bytes: 300_000 }], skipped: [] }), "claude-opus-4.7");
+});
+
+test("normalizeModel maps natural-language aliases to canonical Kiro ids", () => {
+  // Family-only aliases.
+  assert.equal(normalizeModel("opus"), "claude-opus-4.7");
+  assert.equal(normalizeModel("sonnet"), "claude-sonnet-4");
+  assert.equal(normalizeModel("haiku"), "claude-haiku-4");
+  // Natural-language and mixed-case forms.
+  assert.equal(normalizeModel("claude opus"), "claude-opus-4.7");
+  assert.equal(normalizeModel("Claude Opus"), "claude-opus-4.7");
+  assert.equal(normalizeModel("Claude Opus 4.7"), "claude-opus-4.7");
+  assert.equal(normalizeModel("opus 4.7"), "claude-opus-4.7");
+  assert.equal(normalizeModel("claude_sonnet_4"), "claude-sonnet-4");
+});
+
+test("normalizeModel preserves canonical ids, auto, and unknown models", () => {
+  assert.equal(normalizeModel("claude-sonnet-4"), "claude-sonnet-4");
+  assert.equal(normalizeModel("claude-opus-4.7"), "claude-opus-4.7");
+  assert.equal(normalizeModel("auto"), "auto");
+  assert.equal(normalizeModel("AUTO"), "auto");
+  // Unknown ids pass through (whitespace normalized) instead of being dropped.
+  assert.equal(normalizeModel("gpt-4o"), "gpt-4o");
+  assert.equal(normalizeModel("some custom model"), "some-custom-model");
+});
+
+test("normalizeModel returns undefined for empty input", () => {
+  assert.equal(normalizeModel(undefined), undefined);
+  assert.equal(normalizeModel(null), undefined);
+  assert.equal(normalizeModel(""), undefined);
+  assert.equal(normalizeModel("   "), undefined);
 });
 
 test("stripAnsi removes color sequences and normalizes line endings", () => {

@@ -155,6 +155,23 @@ test("main spawnSync fallback calls kiro chat with expected flags and cwd", asyn
   assert.equal(path.resolve(calls[2]?.opts?.cwd), process.cwd());
 });
 
+test("main normalizes a natural-language model alias to the canonical id", async () => {
+  const io = makeStreams();
+  const calls = [];
+  const result = await main(["--model", "claude opus", "develop a front-end"], {
+    ...io,
+    _spawnSync: fakeSpawnSuccess(calls),
+    _loadNodePty: () => null,
+  });
+  assert.equal(result, EXIT_SUCCESS);
+  const taskArgs = calls[2]?.args ?? [];
+  const modelIndex = taskArgs.indexOf("--model");
+  assert.ok(modelIndex >= 0, "expected --model to be forwarded");
+  assert.equal(taskArgs[modelIndex + 1], "claude-opus-4.7");
+  // "develop a front-end" is build work: agentic mode must stay on.
+  assert.ok(taskArgs.includes("--trust-all-tools"));
+});
+
 test("main spawnSync fallback classifies auth output", async () => {
   const io = makeStreams();
   let callCount = 0;

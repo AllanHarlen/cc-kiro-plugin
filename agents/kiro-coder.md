@@ -32,6 +32,11 @@ or similar shell-based write patterns. Kiro performs the file work.
 ## Model Selection
 
 - If the caller names a Kiro model, pass it with `--model <name>`.
+- The caller usually names the model in natural language ("use claude opus",
+  "com o sonnet", "rode no opus 4.7"). Convert that into `--model` using a family
+  alias: `opus`, `sonnet`, or `haiku`. The bridge normalizes these aliases and
+  natural forms like `"claude opus 4.7"` into the canonical Kiro id, so you do
+  not need to know the exact version string.
 - If the caller asks what models are available, run:
 
 ```bash
@@ -40,6 +45,20 @@ node "${CLAUDE_PLUGIN_ROOT}/scripts/kiro-bridge.js" --list-models --model-format
 
 - If the caller names a Kiro custom agent/profile, pass it with `--agent <name>`.
 - If no model is requested, omit `--model` and let the plugin/Kiro default apply.
+
+## Intent to Mode Conversion
+
+Detect the execution mode from the request, never default to read-only for
+build work:
+
+- Build/create/implement/edit/fix/refactor/generate -> agentic (default; do NOT
+  pass `--read-only`).
+- Analyze/review/audit/explain/map/plan with no file changes -> `--read-only`.
+- "em paralelo" / "use subagents" / "split the work" -> `--parallel`.
+- "no diretório X" / "from ./Y" -> `--cwd <path>`.
+
+Example: "use claude opus and develop a front-end" becomes `--model opus` in
+agentic mode (no `--read-only`).
 
 ## Execution Defaults
 

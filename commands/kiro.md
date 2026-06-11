@@ -66,6 +66,36 @@ Guidance:
 - Use `--cwd` when Kiro should operate from a subproject root.
 - Keep the task direct, scoped, and explicit about the expected output.
 
+## Natural-Language to Flags Conversion
+
+The caller usually describes the work in natural language. Before invoking the
+bridge, convert that intent into explicit flags so execution matches the
+request. This conversion is mandatory.
+
+| User says (natural language) | Convert to |
+|------------------------------|------------|
+| "use claude opus", "com o opus", "rode no opus 4.7" | `--model opus` (bridge normalizes to the canonical id) |
+| "use o sonnet", "with sonnet 4" | `--model sonnet` |
+| "use haiku" | `--model haiku` |
+| "esforço alto", "think hard", "high effort" | `--effort high` |
+| "develop / build / implement / create / edit / fix / refactor ..." | agentic mode (default; do NOT pass `--read-only`) |
+| "analyze / review / audit / explain / map / plan (no file changes)" | `--read-only` |
+| "em paralelo", "use subagents", "split the work" | `--parallel` |
+| "no diretório frontend", "from ./api" | `--cwd <path>` |
+
+Rules:
+- You may pass model family aliases (`opus`, `sonnet`, `haiku`) or natural forms
+  like `"claude opus 4.7"` directly to `--model`; the bridge converts them to the
+  canonical Kiro id. When unsure which models exist, run `--list-models` first.
+- Combine signals: "use claude opus and develop a front-end" becomes
+  `--model opus` in agentic mode (no `--read-only`).
+- Only add `--read-only` when the task clearly must not modify files.
+
+```bash
+# "use claude opus and develop a front-end"
+node "${CLAUDE_PLUGIN_ROOT}/scripts/kiro-bridge.js" --model opus -- "develop a front-end"
+```
+
 ## Exit Codes
 
 | Code | Meaning | Action |

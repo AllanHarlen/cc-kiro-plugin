@@ -85,7 +85,10 @@ Options:
   --cwd <path>               Working directory used when spawning kiro-cli. Default: current directory.
   --files <glob,...>         File globs to ingest.
   --format <text>            Output format. Default: text.
-  --model <name>             Forwarded to kiro-cli chat --model.
+  --model <name>             Forwarded to kiro-cli chat --model. Accepts family
+                             aliases (opus, sonnet, haiku) and natural-language
+                             forms like "claude opus 4.7"; normalized to the
+                             canonical Kiro id before invocation.
   --list-models              List Kiro models and exit.
   --model-format <format>    Output format for --list-models: plain, json, json-pretty. Default: json.
   --effort <level>           Forwarded to kiro-cli chat --effort (low, medium, high, xhigh, max).
@@ -764,11 +767,55 @@ function buildKiroMissingError() {
   return err;
 }
 
+// Canonical Kiro model id for each Claude model family. These are the single
+// source of truth used both by resolveAutoModel and by the natural-language
+// alias normalizer below. Update these when Kiro ships new model versions.
+export const CANONICAL_MODELS = {
+  opus: "claude-opus-4.7",
+  sonnet: "claude-sonnet-4",
+  haiku: "claude-haiku-4",
+};
+
+const MODEL_FAMILIES = Object.keys(CANONICAL_MODELS);
+
+// Converts a natural-language or shorthand model reference into the canonical
+// Kiro model id. This guarantees that a request like "use claude opus" (which a
+// host LLM may forward as --model opus, "claude opus", or "Claude Opus 4.7")
+// reaches kiro-cli as a valid id. Unknown ids (e.g. third-party models) are
+// passed through unchanged so the contract never silently drops a valid value.
+export function normalizeModel(raw) {
+  if (raw == null) return undefined;
+  const trimmed = String(raw).trim();
+  if (!trimmed) return undefined;
+
+  const lower = trimmed.toLowerCase();
+  if (lower === "auto") return "auto";
+
+  // Normalize spacing/separators and drop an optional leading "claude" token so
+  // "Claude Opus 4.7", "claude-opus-4.7", and "opus 4.7" all compare equally.
+  const compact = lower
+    .replace(/[\s_]+/g, "-")
+    .replace(/^claude-?/, "");
+
+  // Family-only alias: "opus" -> "claude-opus-4.7".
+  if (CANONICAL_MODELS[compact]) return CANONICAL_MODELS[compact];
+
+  // Family + explicit version: "opus-4.7" -> "claude-opus-4.7".
+  for (const family of MODEL_FAMILIES) {
+    if (compact === family || compact.startsWith(`${family}-`)) {
+      return `claude-${compact}`;
+    }
+  }
+
+  // Unknown model id: keep it but normalize internal whitespace to hyphens.
+  return trimmed.replace(/\s+/g, "-");
+}
+
 export function resolveAutoModel(context) {
   const totalBytes = context.included.reduce((sum, f) => sum + f.bytes, 0);
   if (totalBytes < 32_768) return "auto";
-  if (totalBytes < 262_144) return "claude-sonnet-4";
-  return "claude-opus-4.7";
+  if (totalBytes < 262_144) return CANONICAL_MODELS.sonnet;
+  return CANONICAL_MODELS.opus;
 }
 
 export function checkKiroConnectivity(kiroExe, _spawnSync = spawnSync) {
@@ -952,21 +999,29 @@ export async function main(argv = process.argv.slice(2), {
     logEvent("bridge.context.collected", summarizeContext(context));
 
     const defaultModel = process.env.CLAUDE_PLUGIN_OPTION_DEFAULT_MODEL;
-    let model = parsed.model ?? defaultModel;
+    const requestedModel = parsed.model ?? defaultModel;
+    let model = normalizeModel(requestedModel);
     const modelSource = parsed.model ? "flag" : (defaultModel ? "env" : "default");
     if (model === "auto") {
       const contextBytes = context.included.reduce((s, f) => s + f.bytes, 0);
       model = resolveAutoModel(context);
       logEvent("bridge.model.resolved", { model, source: "auto", contextBytes });
     } else {
-      logEvent("bridge.model.resolved", { model: model ?? "(kiro-default)", source: modelSource });
+      logEvent("bridge.model.resolved", {
+        model: model ?? "(kiro-default)",
+        requested: requestedModel ?? "(none)",
+        normalized: requestedModel !== undefined && model !== requestedModel,
+        source: modelSource,
+      });
     }
+
+    const subagentModel = normalizeModel(parsed.subagentModel);
 
     let prompt = buildKiroPrompt({
       task: parsed.task,
       context,
       parallel: parsed.parallel,
-      subagentModel: parsed.subagentModel,
+      subagentModel,
     });
 
     if (process.platform === "win32" && prompt.length > 28_000) {
@@ -987,7 +1042,7 @@ export async function main(argv = process.argv.slice(2), {
         task: parsed.task,
         context: fallbackContext,
         parallel: parsed.parallel,
-        subagentModel: parsed.subagentModel,
+        subagentModel,
       });
     }
 
