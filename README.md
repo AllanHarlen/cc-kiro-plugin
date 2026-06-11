@@ -6,6 +6,38 @@
 
 A Claude Code and Codex plugin that integrates [Kiro CLI](https://kiro.dev/docs/cli/quick-start/) as an agentic coding assistant. It routes tasks through a shared Node.js bridge, so Claude can delegate file edits, code search, shell commands, architecture analysis, and multi-step implementation work to Kiro.
 
+## Installation
+
+### 1. Register the marketplace
+
+```bash
+claude plugin marketplace add AllanHarlen/cc-kiro-plugin
+```
+
+### 2. Install the plugin
+
+```bash
+claude plugin install cc-kiro-plugin
+```
+
+Or open the interactive plugin manager with `/plugin` and browse to install.
+
+### 3. Install and authenticate Kiro CLI
+
+```bash
+# macOS/Linux
+curl -fsSL https://cli.kiro.dev/install | bash
+
+# Windows PowerShell
+irm 'https://cli.kiro.dev/install.ps1' | iex
+```
+
+```bash
+kiro-cli login
+```
+
+Kiro headless mode may require `KIRO_API_KEY` for unattended execution.
+
 ## Why Use The Bridge?
 
 Claude can call `kiro-cli` directly through Bash, but the plugin adds a stable contract:
@@ -18,29 +50,6 @@ Claude can call `kiro-cli` directly through Bash, but the plugin adds a stable c
 | Output capture | Manual | `--output-file` |
 | Structured failures | No | quota/auth/timeout exit codes |
 | Claude Code command/skill | No | `/cc-kiro-plugin:kiro` and `$kiro-integration` |
-
-## Requirements
-
-- Kiro CLI installed
-- Kiro authenticated
-
-Install Kiro CLI:
-
-```bash
-# macOS/Linux
-curl -fsSL https://cli.kiro.dev/install | bash
-
-# Windows PowerShell
-irm 'https://cli.kiro.dev/install.ps1' | iex
-```
-
-Authenticate:
-
-```bash
-kiro-cli login
-```
-
-Kiro headless mode may require `KIRO_API_KEY` for unattended execution.
 
 ## Usage
 
